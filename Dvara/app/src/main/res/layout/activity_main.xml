@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout >
+    <data>
+            <variable
+                name="userViewModel"
+                type="com.dvara.edairy.UserViewModel" />
+    </data>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/add_user_details"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="20dp"
+        android:textSize="32sp"
+        android:textColor="@color/black"
+        android:id="@+id/tv_title"
+        android:textStyle="bold" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_title"
+        android:layout_marginTop="20dp"
+        android:id="@+id/et_name"
+        android:inputType="text"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:hint="@string/enter_name"
+        android:ellipsize="start"
+        android:gravity="center"
+        android:autofillHints="@string/enter_name" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/et_name"
+        android:layout_marginTop="20dp"
+        android:inputType="phone"
+        android:maxLength="10"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:id="@+id/et_mobile_number"
+        android:maxLines="1"
+        android:gravity="center"
+        android:autofillHints="@string/enter_mobile_number"
+        android:hint="@string/enter_mobile_number"/>
+
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/et_mobile_number"
+        android:layout_marginTop="20dp"
+        android:id="@+id/iv_avatar"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cornerRadius="10dp"
+        android:text="@string/take_picture"
+        android:textColor="@color/black"
+        android:textAllCaps="false"
+        android:id="@+id/bt_take_picture"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_avatar"
+        android:layout_marginTop="40dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"/>
+
+
+    <com.google.android.material.button.MaterialButton
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cornerRadius="10dp"
+        android:text="@string/submit"
+        android:textColor="@color/white"
+        android:textAllCaps="true"
+        android:id="@+id/bt_submit"
+        app:backgroundTint="@color/dark_green"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/bt_take_picture"
+        android:layout_marginTop="60dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

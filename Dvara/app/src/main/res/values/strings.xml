@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Davara</string>
+    <string name="add_user_details">ADD USER DETAILS</string>
+    <string name="enter_name">Enter Name</string>
+    <string name="enter_mobile_number">Enter Mobile Number</string>
+    <string name="take_picture">Take Picture</string>
+    <string name="submit">Submit</string>
+    <string name="photo">Photo</string>
+    <string name="fetch">Fetch</string>
+    <string name="find_user_details">FIND USER DETAILS</string>
+</resources>

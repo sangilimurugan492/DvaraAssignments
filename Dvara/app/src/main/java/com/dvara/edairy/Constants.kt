@@ -5,6 +5,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.os.ParcelFileDescriptor
@@ -18,7 +19,7 @@ import java.util.*
 object Constants {
     public const val AppNewFolderName = "Dvara"
     private fun addImageToDB(
-        profileId: String, userViewModel: UserViewModel, user : User
+        profileId: String, userViewModel: UserViewModel, user: User
     ) {
         val folder = File(
             Environment.getExternalStorageDirectory(),
@@ -47,7 +48,13 @@ object Constants {
         return path
     }
 
-    fun insertInBuildImage(image: Bitmap, profileId: String, context: Context, userViewModel: UserViewModel, user: User) {
+    fun insertInBuildImage(
+        image: Bitmap,
+        profileId: String,
+        context: Context,
+        userViewModel: UserViewModel,
+        user: User
+    ) {
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 val fileName = "$profileId.jpg"
@@ -139,4 +146,23 @@ object Constants {
             }
         }
     }
+
+    fun setOutputFile(context: Context?) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            val resolver = context!!.contentResolver
+            val relativeLocation =
+                Environment.DIRECTORY_PICTURES + File.separator + AppNewFolderName
+            val contentValues = ContentValues()
+            contentValues.put(MediaStore.MediaColumns.RELATIVE_PATH, relativeLocation)
+            val imageUri: Uri =
+                resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)!!
+
+        } else {
+            val folder = File(Environment.getExternalStorageDirectory(), AppNewFolderName)
+            if (!folder.exists()) {
+                folder.mkdir()
+            }
+        }
+    }
+
 }

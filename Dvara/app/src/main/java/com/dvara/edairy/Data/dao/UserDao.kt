@@ -19,7 +19,7 @@ interface UserDao {
     suspend fun updateUser(user : User)
 
     @Query("SELECT * FROM User WHERE mobile = :mobile")
-    suspend fun getUserByMobile(mobile: String) : LiveData<User>
+    suspend fun getUserByMobile(mobile: String) : User
 
     @Delete
     suspend fun delete(user: User)

@@ -1,10 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout >
-    <data>
-        <variable
-            name="userViewModel"
-            type="com.dvara.edairy.UserViewModel" />
-    </data>
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -116,4 +110,3 @@
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
-</layout>

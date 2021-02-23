@@ -1,6 +1,6 @@
 package com.dvara.edairy
 
-import android.content.Intent
+import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
@@ -9,13 +9,14 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.dvara.edairy.Data.AppDatabase
 import com.dvara.edairy.Data.dao.UserDao
 import com.dvara.edairy.Data.entity.User
-import com.dvara.edairy.databinding.ActivityFindUserBinding
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.card.MaterialCardView
 import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
@@ -25,38 +26,44 @@ import kotlinx.coroutines.launch
 import java.io.File
 
 class FetchUserActivity : AppCompatActivity() {
-    private lateinit var bindings: ActivityFindUserBinding
+//    private lateinit var bindings: ActivityFindUserBinding
     private lateinit var userViewModel: UserViewModel
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        bindings = DataBindingUtil.setContentView(this, R.layout.activity_find_user)
+        setContentView(R.layout.activity_find_user)
         val dao: UserDao = AppDatabase.getInstance(application).userDao()
         val repository = UserRepository(dao)
         val factory = UserViewModelFactory(repository)
         userViewModel = ViewModelProvider(this, factory).get(UserViewModel::class.java)
-        bindings.userViewModel = userViewModel
-        bindings.lifecycleOwner = this
         Utility.checkPermission(this)
 
         if (supportActionBar != null) {
             supportActionBar!!.setHomeButtonEnabled(true)
         }
 
-        bindings.btSubmit.setOnClickListener{
-            if (checkWhetherStringEmpty(bindings.etMobileNumber))
+        val etMobile = findViewById<EditText>(R.id.et_mobile_number)
+        val mcView = findViewById<MaterialCardView>(R.id.mcview)
+        val tvName = findViewById<TextView>(R.id.tv_name)
+        val tvMobile = findViewById<TextView>(R.id.tv_mobile_number)
+        val ivPhoto = findViewById<ImageView>(R.id.iv_photo)
+        val btSubmit = findViewById<MaterialButton>(R.id.bt_submit)
+
+        btSubmit.setOnClickListener{
+            if (checkWhetherStringEmpty(etMobile))
             CoroutineScope(Dispatchers.IO).launch {
-                val user = repository.getUserByMobile(bindings.etMobileNumber.text.toString()).value
+                val user = repository.getUserByMobile(etMobile.text.toString())
                 if (user != null) {
-                    bindings.mcview.visibility = View.VISIBLE
-                    bindings.tvName.text = "NAME : ${user.name}"
-                    bindings.tvMobileNumber.text = "MOBILE NUMBER : ${user.mobile}"
-                    populatePhoto(bindings.ivPhoto, user)
+                    mcView.visibility = View.VISIBLE
+                    tvName.text = "NAME : ${user.name}"
+                    tvMobile.text = "MOBILE NUMBER : ${user.mobile}"
+                    populatePhoto(ivPhoto, user)
                 } else {
-                    Snackbar.make(bindings.btSubmit, "Wrong mobile number", Snackbar.LENGTH_LONG).show()
+                    Snackbar.make(tvName, "Wrong mobile number", Snackbar.LENGTH_LONG).show()
                 }
             }
             else {
-                Snackbar.make(bindings.btSubmit, "Please Enter mobile number", Snackbar.LENGTH_LONG).show()
+                Snackbar.make(tvName, "Please Enter mobile number", Snackbar.LENGTH_LONG).show()
             }
         }
 

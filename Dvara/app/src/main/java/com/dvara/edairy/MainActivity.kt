@@ -15,12 +15,11 @@ import android.view.MenuItem
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
-import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.dvara.edairy.Data.AppDatabase
 import com.dvara.edairy.Data.dao.UserDao
 import com.dvara.edairy.Data.entity.User
-import com.dvara.edairy.databinding.ActivityMainBinding
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.snackbar.Snackbar
 import java.io.File
 import java.io.IOException
@@ -30,34 +29,38 @@ import java.util.*
 
 class MainActivity : AppCompatActivity() {
     private val REQUEST_CAMERA = 0
-//    private val CROP_INTENT = 1
     var currentPhotoPath: String? = null
     var imageBitMap: Bitmap? = null
-    private lateinit var bindings: ActivityMainBinding
     private lateinit var userViewModel: UserViewModel
     @SuppressLint("SimpleDateFormat")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        bindings = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        setContentView(R.layout.activity_main)
         val dao:UserDao = AppDatabase.getInstance(application).userDao()
         val repository = UserRepository(dao)
         val factory = UserViewModelFactory(repository)
         userViewModel = ViewModelProvider(this, factory).get(UserViewModel::class.java)
-        bindings.userViewModel = userViewModel
-        bindings.lifecycleOwner = this
-        Utility.checkPermission(this)
+        if (Utility.checkPermission(this)) {
+            Constants.setOutputFile(this)
+        }
 
-        bindings.btTakePicture.setOnClickListener{
+        val btTakePicture = findViewById<MaterialButton>(R.id.bt_take_picture)
+        val btSubmit = findViewById<MaterialButton>(R.id.bt_submit)
+
+        btTakePicture.setOnClickListener{
             cameraIntent()
         }
 
-        bindings.btSubmit.setOnClickListener{
-            if(checkWhetherStringEmpty(bindings.etName) && checkWhetherStringEmpty(bindings.etMobileNumber) && imageBitMap != null) {
+        val etName = findViewById<EditText>(R.id.et_name)
+        val etMobileNumber = findViewById<EditText>(R.id.et_mobile_number)
+
+        btSubmit.setOnClickListener{
+            if(checkWhetherStringEmpty(etName) && checkWhetherStringEmpty(etMobileNumber) && imageBitMap != null) {
                 val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
-                val user = User(0,bindings.etName.text.toString(), bindings.etMobileNumber.text.toString(), "", "")
-                Constants.insertInBuildImage(imageBitMap!!, timeStamp, this, bindings.userViewModel as UserViewModel, user)
+                val user = User(0,etName.text.toString(), etMobileNumber.text.toString(), "", "")
+                Constants.insertInBuildImage(imageBitMap!!, timeStamp, this, userViewModel as UserViewModel, user)
             } else {
-                Snackbar.make(bindings.btSubmit, "Please Enter all fields", Snackbar.LENGTH_LONG).show()
+                Snackbar.make(etName, "Please Enter all fields", Snackbar.LENGTH_LONG).show()
             }
         }
 
@@ -121,7 +124,7 @@ class MainActivity : AppCompatActivity() {
                 if (photoFile != null) {
                     val photoURI = FileProvider.getUriForFile(
                         this,
-                        "com.dvara.edairy", photoFile
+                        "com.dvara.edairy.provider", photoFile
                     )
                     takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
                     startActivityForResult(takePictureIntent, REQUEST_CAMERA)
@@ -155,15 +158,9 @@ class MainActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == REQUEST_CAMERA) onCaptureImageResult(data!!)
-//            if(requestCode == CROP_INTENT)
         }
     }
 
-//    private fun performCrop(data : Intent?) {
-//        if (data != null) {
-//
-//        }
-//    }
 
     private fun onCaptureImageResult(data: Intent) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && currentPhotoPath != null) {

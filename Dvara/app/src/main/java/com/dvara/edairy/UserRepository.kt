@@ -6,7 +6,7 @@ import com.dvara.edairy.Data.entity.User
 
 class UserRepository(private val dao : UserDao) {
 
-    suspend fun getUserByMobile(mobileNo : String) : LiveData<User> {
+    suspend fun getUserByMobile(mobileNo : String) : User {
         return dao.getUserByMobile(mobileNo)
     }
 

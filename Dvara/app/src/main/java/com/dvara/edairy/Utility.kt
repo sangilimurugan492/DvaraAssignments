@@ -1,52 +1,65 @@
-package com.dvara.edairy;
+package com.dvara.edairy
 
-import android.Manifest;
-import android.annotation.TargetApi;
-import android.app.Activity;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.pm.PackageManager;
-import android.os.Build;
+import android.Manifest
+import android.annotation.TargetApi
+import android.app.Activity
+import android.content.Context
+import android.content.pm.PackageManager
+import android.os.Build
+import androidx.appcompat.app.AlertDialog
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 
-import androidx.appcompat.app.AlertDialog;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
-
-public class Utility {
-
-    public static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 123;
-
+object Utility {
+    const val MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 123
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    public static boolean checkPermission(final Context context)
-    {
-        int currentAPIVersion = Build.VERSION.SDK_INT;
-        if(currentAPIVersion>= Build.VERSION_CODES.M)
-        {
-            if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                if (ActivityCompat.shouldShowRequestPermissionRationale((Activity) context, Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                    AlertDialog.Builder alertBuilder = new AlertDialog.Builder(context);
-                    alertBuilder.setCancelable(true);
-                    alertBuilder.setTitle("Permission necessary");
-                    alertBuilder.setMessage("External storage permission is necessary");
-                    alertBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                        @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-                        public void onClick(DialogInterface dialog, int which) {
-                            ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA}, MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
-                        }
-                    });
-                    AlertDialog alert = alertBuilder.create();
-                    alert.show();
-
+    fun checkPermission(context: Context?): Boolean {
+        val currentAPIVersion = Build.VERSION.SDK_INT
+        return if (currentAPIVersion >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(
+                    context!!,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(
+                        (context as Activity?)!!,
+                        Manifest.permission.READ_EXTERNAL_STORAGE
+                    )
+                ) {
+                    val alertBuilder = AlertDialog.Builder(
+                        context
+                    )
+                    alertBuilder.setCancelable(true)
+                    alertBuilder.setTitle("Permission necessary")
+                    alertBuilder.setMessage("External storage permission is necessary")
+                    alertBuilder.setPositiveButton("yes") { dialog, which ->
+                        ActivityCompat.requestPermissions(
+                            (context as Activity?)!!, arrayOf(
+                                Manifest.permission.READ_EXTERNAL_STORAGE,
+                                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                                Manifest.permission.CAMERA
+                            ), MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE
+                        )
+                    }
+                    val alert = alertBuilder.create()
+                    alert.show()
                 } else {
-                    ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA}, MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+                    ActivityCompat.requestPermissions(
+                        (context as Activity?)!!,
+                        arrayOf(
+                            Manifest.permission.READ_EXTERNAL_STORAGE,
+                            Manifest.permission.CAMERA,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE
+                        ),
+                        MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE
+                    )
                 }
-                return false;
+                false
             } else {
-                return true;
+                true
             }
         } else {
-            return true;
+            true
         }
     }
 }
